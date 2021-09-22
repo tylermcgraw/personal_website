@@ -1,10 +1,5 @@
 header {
-    background-color: lightgrey;
-}
-
-.center {
-    display: flex;
-    justify-content: center;
+    background-color: rgb(245, 245, 245);
 }
 
 h1 {
@@ -12,13 +7,21 @@ h1 {
 }
 
 footer {
-    background-color: lightgrey;
+    background-color: rgb(245, 245, 245);
     align-items: center;
-    height: 50px;
     width: 100%;
 }
 
-#github-img {
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+.indent {
+    text-indent: 2em;
+}
+
+#github-img, #linkedin-img {
     height: 20px;
     width: 20px;
 }

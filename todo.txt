@@ -1,3 +1,8 @@
+Todo:
+For quotes blog post - bootstrap quotes (card component)
+Login?
+
+
 Structure:
 About
   About
@@ -5,20 +10,19 @@ About
   Contact
 Blog
   Posts
-  Links
-  Quotes
+    Links
+    Quotes
 Dashboard
   Facebook friends birthdays
   Measurement, workout tracker
   Music tracker
+  Book tracker
 Projects
 
 
 Notes:
 Remember to activate virtual environment
-venv/bin/activate
+./venv/bin/activate
 
 To make requirements file:
 pip freeze > requirements.txt
-
-
