@@ -1,10 +1,11 @@
 Todo:
-For quotes blog post - bootstrap quotes (card component)
+Useful bootstrap components: quotes (card component), blog (custom component), dashboard (custom component)
 Login?
+Fix sticky footer js
 
 
 Structure:
-About
+Home
   About
   Bio
   Contact
@@ -14,7 +15,7 @@ Blog
     Quotes
 Dashboard
   Facebook friends birthdays
-  Measurement, workout tracker
+  Measurements, workout tracker
   Music tracker
   Book tracker
 Projects
@@ -22,7 +23,13 @@ Projects
 
 Notes:
 Remember to activate virtual environment
-./venv/bin/activate
+. ./venv/bin/activate
+
+Initialize db
+flask init-db
+
+Flask debug mode
+export FLASK_DEBUG=1
 
 To make requirements file:
 pip freeze > requirements.txt
