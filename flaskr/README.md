@@ -1,1 +1,0 @@
-My personal website. In production. See my bio, blog posts, dashboard, and projects.
