@@ -1,1 +1,1 @@
-My personal website. In production. See my bio, blog posts, dashboard, and projects.
+My personal website. See my bio, blog posts, dashboard, and projects. Hosted by Heroku.

@@ -1,8 +1,6 @@
 import os
-import requests
-import secrets
 
-from flask import Flask, redirect, render_template, session, request
+from flask import Flask, render_template
 
 
 def create_app(test_config=None):
@@ -38,17 +36,13 @@ def create_app(test_config=None):
   from . import blog
   app.register_blueprint(blog.bp)
 
+  # Register dashboard blueprint
+  from . import dashboard
+  app.register_blueprint(dashboard.bp)
 
   @app.route('/')
   def index():
     return render_template('index.html')
-
-
-  @app.route('/dashboard')
-  def dashboard():
-    state = secrets.token_urlsafe(16)
-    r = requests.get(f"https://accounts.spotify.com/authorize?client_id=b7cc6ae6953b4d0598ccc84a86f8b5f6&response_type=code&redirect_uri=https%3A%2F%2Fexample.com&scope=user-top-read&state={state}")
-    return render_template('dashboard.html')
 
 
   @app.route('/projects')

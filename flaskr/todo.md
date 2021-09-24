@@ -22,8 +22,11 @@ Projects
 
 
 Notes:
+Heroku scale dynos:
+heroku ps:scale web=0
+
 Remember to activate virtual environment
-. ./venv/bin/activate
+. .venv/bin/activate
 
 Initialize db
 flask init-db

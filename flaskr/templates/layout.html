@@ -17,16 +17,16 @@
     <header>
       <ul class="nav justify-content-center">
         <li class="nav-item">
-          <a class="nav-link Home" href="/">Home</a>
+          <a class="nav-link Home" href="{{ url_for('index') }}">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link Blog" href="/blog/home">Blog</a>
+          <a class="nav-link Blog" href="{{ url_for('blog.home') }}">Blog</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link Dashboard" href="/dashboard">Dashboard</a>
+          <a class="nav-link Dashboard" href="{{ url_for('dashboard.home') }}">Dashboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link Projects" href="/projects">Projects</a>
+          <a class="nav-link Projects" href="{{ url_for('projects') }}">Projects</a>
         </li>
         {% if g.user %}
           <li class="nav-item">

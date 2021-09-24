@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Dashboard
+{% endblock %}
+
+{% block main %}
+  <h1>Dashboard</h1>
+  <form action="{{ url_for('dashboard.home') }}" method="post">
+    <input class="action" type="submit" value="Get Spotify Artists/Albums">
+  </form>
+{% endblock %}
