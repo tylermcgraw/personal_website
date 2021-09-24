@@ -18,11 +18,11 @@ auth_params = {
 }
 
 
-@bp.route('/home')
+@bp.route('/home', methods=('GET', 'POST'))
 def home():
   if request.method == 'POST':
     r = requests.get('https://accounts.spotify.com/authorize', params = auth_params)
-    return render_template('dashboard/spotify.html', r)
+    return render_template('dashboard/spotify.html', r = r)
 
   return render_template('dashboard/home.html')
 
