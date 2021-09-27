@@ -1,28 +1,29 @@
 import requests
 import secrets
-
-from flask import Blueprint, session, request, render_template
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+from flask import Blueprint, session, request, render_template, redirect
 
 bp = Blueprint('dashboard', __name__, url_prefix="/dashboard")
 
-STATE = secrets.token_urlsafe(16)
-CLIENT_ID = 'b7cc6ae6953b4d0598ccc84a86f8b5f6'
-CLIENT_SECRET = 'd17a6734251c42fd9a0d954cc9c92446'
-REDIRECT_URI = 'tylermcgraw.herokuapp.com/dashboard/spotify'
+scope = 'user-read-top'
+ranges = ['short_term', 'medium_term', 'long_term']
 
-auth_params = {
-  'client_id': CLIENT_ID,
-  'response_type': 'code',
-  'redirect_uri': REDIRECT_URI,
-  'state': STATE
-}
-
+code = 'AQDlZp2WhLO3HGbxAIegPOd0NPQ_8ErJZTNE2zerz7ookLeAsHXuCurIx5KgicIvT06Pkv4UzbkLFxprnYTWu6JjbXRdqg3-b7reo3pb9F3SOnSu52S8pDfoXgBu4f7wu9s24UG_XSiKnO_9rqYghF2h1SVqVTCOJ2H8JwbDD0vekJKzsZN494E5JKKvnShUyvCSPHJb2O0JW0n-S4WD'
 
 @bp.route('/home', methods=('GET', 'POST'))
 def home():
   if request.method == 'POST':
-    r = requests.get('https://accounts.spotify.com/authorize', params = auth_params)
-    return render_template('dashboard/spotify.html', r = r)
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
+
+    for sp_range in ['short_term', 'medium_term', 'long_term']:
+      print("range:", sp_range)
+
+      results = sp.current_user_top_artists(time_range=sp_range, limit=50)
+
+      for i, item in enumerate(results['items']):
+        print(i, item['name'])
+      print()
 
   return render_template('dashboard/home.html')
 

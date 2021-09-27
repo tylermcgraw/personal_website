@@ -2,6 +2,7 @@ Todo:
 Useful bootstrap components: quotes (card component), blog (custom component), dashboard (custom component)
 Login?
 Fix sticky footer js
+Spotify API (see spotipy if stuck)
 
 
 Structure:
