@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Dashboard
+{% endblock %}
+
+{% block main %}
+  <h1>Dashboard</h1>
+  {% if g.user.username == 'tmcgraw' %}
+    <form action="{{ url_for('dashboard') }}" method="post">
+      <input class="action" type="submit" value="Update Spotify Artists/Albums">
+    </form>
+  {% endif %}
+  <div class="container">
+    <div class="row">
+      {% if artists %}
+      <div class="col">
+        <h2>Top Artists</h2>
+        <ol>
+          {% for artist in artists %}
+            <li>
+              <img style="height:20px; width:20px" src={{ artist.image_url }} alt="{{ artist.name }} image">
+              <a href={{ artist.spotify_url }}>{{ artist.name }}</a>
+            </li>
+          {% endfor %}
+        </ol>
+      </div>
+      {% endif %}
+      {% if tracks %}
+      <div class="col">
+        <h2>Top Tracks</h2>
+        <ol>
+          {% for track in tracks %} 
+            <li><a href={{ track.spotify_url }}>{{ track.name }} // {{ track.artist }}</a></li>
+          {% endfor %}
+        </ol>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
