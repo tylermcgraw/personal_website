@@ -1,6 +1,5 @@
 import os
 import spotipy
-from flaskr import config
 from spotipy.oauth2 import SpotifyOAuth
 from flask import Flask, render_template, request
 
