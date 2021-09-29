@@ -36,7 +36,7 @@ def create_app(test_config=None):
   from . import blog
   app.register_blueprint(blog.bp)
 
-  from . import config
+  from . import spotify_api
   from . import book_scraper
 
   @app.route('/dashboard', methods=('GET', 'POST'))
@@ -52,9 +52,9 @@ def create_app(test_config=None):
         #if no_book_exists:
         dtb.execute('INSERT INTO book(title, author, status, url) VALUES(?, ?, ?, ?)', (book['title'], book['author'], book['status'], book['url']))
 
-      sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=config.CLIENT_ID,
-                                                     client_secret=config.CLIENT_SECRET,
-                                                     redirect_uri=config.REDIRECT_URI,
+      sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=spotify_api.CLIENT_ID,
+                                                     client_secret=spotify_api.CLIENT_SECRET,
+                                                     redirect_uri=spotify_api.REDIRECT_URI,
                                                      scope='user-top-read'))
 
       artist_data = sp.current_user_top_artists(time_range='long_term', limit=20)
