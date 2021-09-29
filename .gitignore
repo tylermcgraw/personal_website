@@ -1,4 +1,5 @@
 .venv/
+pyvenv.cfg
 
 *.pyc
 __pycache__/
@@ -13,5 +14,3 @@ htmlcov/
 dist/
 build/
 *.egg-info/
-
-config.py
