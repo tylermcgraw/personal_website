@@ -36,10 +36,22 @@ def create_app(test_config=None):
   from . import blog
   app.register_blueprint(blog.bp)
 
+  from . import config
+  from . import book_scraper
+
   @app.route('/dashboard', methods=('GET', 'POST'))
   def dashboard():
     dtb = db.get_db()
+    # When tmcgraw clicks refresh
     if request.method == 'POST':
+      books = book_scraper.get_books()
+      # Clear books table
+      dtb.execute('DELETE FROM book')
+      for book in books:
+        #no_book_exists = dtb.execute('SELECT count(*) FROM (SELECT title FROM book WHERE title = :title)', {'title': book['title']}).fetchone()
+        #if no_book_exists:
+        dtb.execute('INSERT INTO book(title, author, status, url) VALUES(?, ?, ?, ?)', (book['title'], book['author'], book['status'], book['url']))
+
       sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=config.CLIENT_ID,
                                                      client_secret=config.CLIENT_SECRET,
                                                      redirect_uri=config.REDIRECT_URI,
@@ -49,7 +61,7 @@ def create_app(test_config=None):
       track_data = sp.current_user_top_tracks(time_range='long_term', limit=20)
       
       # Check if db is empty -> insert if empty, update otherwise
-      isempty = dtb.execute('SELECT count(*) FROM (select 0 from artist limit 1)').fetchone()[0] == 0
+      isempty = dtb.execute('SELECT count(*) FROM (SELECT 0 FROM artist LIMIT 1)').fetchone()[0] == 0
       
       for i, item in enumerate(artist_data['items']):
         if isempty:
@@ -64,8 +76,9 @@ def create_app(test_config=None):
 
     artists = dtb.execute('SELECT * FROM artist ORDER BY rank').fetchall()
     tracks = dtb.execute('SELECT * FROM track ORDER BY rank').fetchall()
+    books = dtb.execute('SELECT * FROM book').fetchall()
     dtb.commit()
-    return render_template('dashboard.html', artists=artists, tracks=tracks)
+    return render_template('dashboard.html', artists=artists, tracks=tracks, books=books)
 
 
   @app.route('/')

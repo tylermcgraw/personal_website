@@ -17,8 +17,8 @@ Blog
 Dashboard
   Facebook friends birthdays
   Measurements, workout tracker
-  Music tracker
-  Book tracker
+  Music tracker (spotify)
+  Book tracker (goodreads)
 Projects
 
 
@@ -32,7 +32,8 @@ Remember to activate virtual environment
 Initialize db
 flask init-db
 
-Flask debug mode
+Flask epoxrt app/debug mode
+export FLASK_APP=flaskr
 export FLASK_DEBUG=1
 
 To make requirements file:

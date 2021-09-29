@@ -8,7 +8,7 @@
   <h1>Dashboard</h1>
   {% if g.user.username == 'tmcgraw' %}
     <form action="{{ url_for('dashboard') }}" method="post">
-      <input class="action" type="submit" value="Update Spotify Artists/Albums">
+      <input class="action" type="submit" value="Refresh">
     </form>
   {% endif %}
   <div class="container">
@@ -34,6 +34,44 @@
             <li><a href={{ track.spotify_url }}>{{ track.name }} // {{ track.artist }}</a></li>
           {% endfor %}
         </ol>
+      </div>
+      {% endif %}
+      {% if books %}
+      <div class="col">
+        <h2>Currently Reading</h2>
+        <ul>
+          {% for book in books %}
+            {% if book.status == 'currently-reading' %}
+              <li>
+                <a href={{ book.url }}>{{ book.title }} by {{ book.author }}</a><br>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col">
+        <h2>Read</h2>
+        <ul>
+          {% for book in books %} 
+            {% if book.status == 'read' %}
+              <li>
+                <a href={{ book.url }}>{{ book.title }} by {{ book.author }}</a><br>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col">
+        <h2>Want to Read</h2>
+        <ul>
+          {% for book in books %} 
+            {% if book.status == 'to-read' %}
+              <li>
+                <a href={{ book.url }}>{{ book.title }} by {{ book.author }}</a><br>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
       </div>
       {% endif %}
     </div>

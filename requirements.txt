@@ -2,7 +2,7 @@ certifi==2021.5.30
 charset-normalizer==2.0.6
 click==8.0.1
 Flask==2.0.1
--e git+https://github.com/tylermcgraw/personal_website.git@9ee09a8e37d1f267ddb867e02634a9f3605b75a3#egg=flaskr
+-e git+https://github.com/tylermcgraw/personal_website.git@7bd773e67d8988806229a3cfc13290b5993576a8#egg=flaskr
 gunicorn==20.1.0
 idna==3.2
 itsdangerous==2.0.1
