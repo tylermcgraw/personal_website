@@ -13,8 +13,22 @@ function setFooter()
     }
 }
 
+
+// Use bootstrap navbar to make the active page in the header bold
+function setActivePage()
+{
+    url = window.location.href
+    url_suffix = url.substring(url.indexOf('.com') + 5)
+    end = url_suffix.indexOf('/')
+    end === -1 ? cur_page = url_suffix : cur_page = url_suffix.substring(0, end)
+    console.log(cur_page)
+    page = document.getElementById(cur_page)
+    if (page !== null) page.setAttribute('class', 'nav-link active')
+}
+
 // Wait until DOM is loaded
 document.addEventListener("DOMContentLoaded", () =>
 {
     setFooter();
+    setActivePage();
 });

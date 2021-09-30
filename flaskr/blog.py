@@ -85,7 +85,7 @@ def update(id):
       db.commit()
       return redirect(url_for('blog.home'))
 
-    return render_template('blog/update.html', post=post)
+  return render_template('blog/update.html', post=post)
 
 
 @bp.route('/<int:id>/delete', methods=('POST',))

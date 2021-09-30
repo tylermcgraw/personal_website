@@ -1,5 +1,6 @@
 header {
-    background-color: rgb(245, 245, 245);
+    /*background-color: rgb(245, 245, 245);*/
+    border-bottom: rgb(230, 230, 230) 1px solid;
 }
 
 h1 {
@@ -7,7 +8,8 @@ h1 {
 }
 
 footer {
-    background-color: rgb(245, 245, 245);
+    /*background-color: rgb(245, 245, 245);*/
+    border-top: rgb(230, 230, 230) 1px solid;
     align-items: center;
     width: 100%;
 }
