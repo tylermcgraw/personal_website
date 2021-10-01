@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block main %}
-  <h1>Dashboard</h1>
   {% if g.user.username == 'tmcgraw' %}
     <form action="{{ url_for('dashboard') }}" method="post">
       <input class="action" type="submit" value="Refresh">

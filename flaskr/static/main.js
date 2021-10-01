@@ -13,7 +13,6 @@ function setFooter()
     }
 }
 
-
 // Use bootstrap navbar to make the active page in the header bold
 function setActivePage()
 {
