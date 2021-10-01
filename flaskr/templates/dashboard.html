@@ -49,10 +49,10 @@
         </ul>
       </div>
       <div class="col">
-        <h2>Read</h2>
+        <h2>Want to Read</h2>
         <ul>
           {% for book in books %} 
-            {% if book.status == 'read' %}
+            {% if book.status == 'to-read' %}
               <li>
                 <a href={{ book.url }}>{{ book.title }} by {{ book.author }}</a><br>
               </li>
@@ -61,10 +61,10 @@
         </ul>
       </div>
       <div class="col">
-        <h2>Want to Read</h2>
+        <h2>Read</h2>
         <ul>
           {% for book in books %} 
-            {% if book.status == 'to-read' %}
+            {% if book.status == 'read' %}
               <li>
                 <a href={{ book.url }}>{{ book.title }} by {{ book.author }}</a><br>
               </li>

@@ -7,6 +7,14 @@ h1 {
     margin: 25px;
 }
 
+a { 
+    color: inherit; 
+}
+
+a:hover {
+    color: inherit;
+}
+
 footer {
     /*background-color: rgb(245, 245, 245);*/
     border-top: rgb(230, 230, 230) 1px solid;
