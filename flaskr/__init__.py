@@ -48,7 +48,8 @@ def create_app(test_config=None):
                                                  cache_handler=cache_handler, 
                                                  show_dialog=True)
       auth_manager.get_access_token(request.args.get("code"))
-      return redirect('/')
+      # code 307 is a POST request, so tmcgraw doesn't have to click refresh again
+      return redirect('/dashboard', code=307)
 
     dtb = db.get_db()
     # When user tmcgraw clicks refresh
@@ -77,8 +78,8 @@ def create_app(test_config=None):
       sp = spotipy.Spotify(auth_manager=auth_manager)
 
       # Range can be short-term, medium-term, or long-term
-      artist_data = sp.current_user_top_artists(time_range='medium_term', limit=20)
-      track_data = sp.current_user_top_tracks(time_range='medium_term', limit=20)
+      artist_data = sp.current_user_top_artists(time_range='long_term', limit=20)
+      track_data = sp.current_user_top_tracks(time_range='long_term', limit=20)
       
       # Check if db is empty -> insert if empty, update otherwise
       isempty = dtb.execute('SELECT count(*) FROM (SELECT 0 FROM artist LIMIT 1)').fetchone()[0] == 0

@@ -4,6 +4,7 @@ pyvenv.cfg
 __pycache__/
 *.cache
 .pytest_cache/
+.cache_spotify
 .coverage
 htmlcov/
 dist/
