@@ -43,8 +43,12 @@ def create_app(test_config=None):
   def dashboard():
     # If being redirected from Spotify
     if request.args.get("code"):
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect('/')
+      cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=cache_folder)
+      auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-top-read',
+                                                 cache_handler=cache_handler, 
+                                                 show_dialog=True)
+      auth_manager.get_access_token(request.args.get("code"))
+      return redirect('/')
 
     dtb = db.get_db()
     # When user tmcgraw clicks refresh
