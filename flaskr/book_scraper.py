@@ -8,7 +8,6 @@ def get_books():
     count = 0
     while count != 1:
       count = 0
-      print(page)
       with urllib.request.urlopen(f"https://www.goodreads.com/review/list/137613953-tyler?page={page}&per_page=30&shelf={shelf}&utf8=%E2%9C%93") as response:
         html = response.read().decode('utf-8')
         index = 0

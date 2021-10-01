@@ -1,7 +1,6 @@
 import os
 import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 def create_app(test_config=None):
   # Create and configure the app
@@ -36,33 +35,51 @@ def create_app(test_config=None):
   from . import blog
   app.register_blueprint(blog.bp)
 
-  from . import spotify_api
   from . import book_scraper
+
+  cache_folder = 'flaskr/.cache_spotify/'
 
   @app.route('/dashboard', methods=('GET', 'POST'))
   def dashboard():
+    # If being redirected from Spotify
+    if request.args.get("code"):
+        auth_manager.get_access_token(request.args.get("code"))
+        return redirect('/')
+
     dtb = db.get_db()
-    # When tmcgraw clicks refresh
+    # When user tmcgraw clicks refresh
     if request.method == 'POST':
       books = book_scraper.get_books()
       # Clear books table
       dtb.execute('DELETE FROM book')
+      # Populate books table
       for book in books:
-        #no_book_exists = dtb.execute('SELECT count(*) FROM (SELECT title FROM book WHERE title = :title)', {'title': book['title']}).fetchone()
-        #if no_book_exists:
         dtb.execute('INSERT INTO book(title, author, status, url) VALUES(?, ?, ?, ?)', (book['title'], book['author'], book['status'], book['url']))
 
-      sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=spotify_api.CLIENT_ID,
-                                                     client_secret=spotify_api.CLIENT_SECRET,
-                                                     redirect_uri=spotify_api.REDIRECT_URI,
-                                                     scope='user-top-read'))
+      # Make sure cache exists
+      if not os.path.exists(cache_folder):
+        os.makedirs(cache_folder)
 
-      artist_data = sp.current_user_top_artists(time_range='long_term', limit=20)
-      track_data = sp.current_user_top_tracks(time_range='long_term', limit=20)
+      cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=cache_folder)
+      auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-top-read',
+                                                 cache_handler=cache_handler, 
+                                                 show_dialog=True)
+      
+      # Redirect to Spotify sign in if no token
+      if not auth_manager.validate_token(cache_handler.get_cached_token()):
+        return redirect(auth_manager.get_authorize_url())
+        
+      # Signed in, get data
+      sp = spotipy.Spotify(auth_manager=auth_manager)
+
+      # Range can be short-term, medium-term, or long-term
+      artist_data = sp.current_user_top_artists(time_range='medium_term', limit=20)
+      track_data = sp.current_user_top_tracks(time_range='medium_term', limit=20)
       
       # Check if db is empty -> insert if empty, update otherwise
       isempty = dtb.execute('SELECT count(*) FROM (SELECT 0 FROM artist LIMIT 1)').fetchone()[0] == 0
       
+      # Insert into db if empty, otherwise update
       for i, item in enumerate(artist_data['items']):
         if isempty:
           dtb.execute('INSERT INTO artist(name, image_url, spotify_url, rank) VALUES(?, ?, ?, ?)', (item['name'], item['images'][0]['url'], item['external_urls']['spotify'], i))

@@ -1,1 +1,3 @@
-My personal website. See my bio, blog posts, dashboard, and projects. Hosted by Heroku.
+My personal website. Learn more about me and see my blog posts, dashboard, and projects. 
+
+Hosted by Heroku.
