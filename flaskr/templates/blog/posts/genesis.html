@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Blog
+{% endblock %}
+
+{% block header %}
+  <ul class="navbar-nav">
+    {% if g.user %}
+      <li class="nav-item">
+        <span class="nav-link active">{{ g.user['username'] }}</span>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a>
+      </li>
+    {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
+      </li>
+    {% endif %}
+    </ul>
+{% endblock %}
+
+{% block main %}
+<h1>Genesis</h1>
+<p>
+  I've never liked writing. However, when I try to think of the reason for why that is, I think it mainly comes down to my not having a natural proclivity for it. I was good at most of the things I did when I was a kid, and I enjoyed being good at things. This was probably partly for competitive reasons, but I also enjoyed the praise I got for being a good student or basketball player. Writing was not among the things that I was good enough at to elicit praise, and so I avoided it as much as possible. My memory could be failing me, but I can't recall a single time in my life where I sat down and wrote something that wasn't for an assignment or application.
+</p>
+<p>
+  I attended liberal schools and was told how it's important to have a growth mindset and embrace failure, but to me these were just banalities. I nodded my head when I heard the words and genuinely agreed with their conclusions, but for whatever reason they never penetrated deep enough into my mind to have any lasting effect. I can't point to when this began to change, but fortunately I've begun to reframe my values in the past few years. I started learning new things because I genuinely found them interesting and now here I am writing because... well I guess I that's the purpose of this post. Why did I start this blog?
+</p>
+<p>
+  My favorite essay by Paul Graham is <a href="http://www.paulgraham.com/essay.html">The Age of the Essay</a>. In it, he gives a history of the art and what the purpose of an essay is, in contrast with "the things one has to write in school". My main takeaway is that while lawyers and high school students write essays to defend a thesis using any means of trickery necessary to sway the reader, <em>real</em> essays document the journey of the author on the path to truth. Actually, essays do more than merely display; they play an integral role in forming this journey. I have certainly found it to be the case that ideas I've thought were brilliant, or at least well-formed, were in reality half-baked and poorly articulated when put to page. Essays help clarify thought and, perhaps more importantly, can even lead you down a path you didn't know was there. 
+</p>
+<p>
+  Why make these essays public if they are primarily for the benefit of the writer? For me the answer is primarily for my own benefit - the difference between a document on my laptop and a public essay is equivalent to the difference in my sartorial taste when watching Netflix in bed and on the day of an interview. Hopefully my writing isn't so esoteric that others won't be able to benefit from it, but I am not starting with the goal of growing a following or promoting a philosophy. A potential downside of this approach is that it ignores the outside world too much - is it such a bad thing to write with an audience in mind? As Sam Fussell (son of historian Paul Fussell) said, <a href="http://www.drmichaeljoyner.com/sam-fussell-an-interview-with-the-author-of-muscle/">"a monk in his cloister is worth narily an oyster."</a> Ignoring the fact that Chaucer had the opposite message in mind when he wrote of <a href="https://www.owleyes.org/text/canterbury-tales/read/the-monk">the monk</a>, I'm not too worried about becoming an armchair philosopher. The last couple paragraphs might sound pretentious (essays as journeys toward the truth?) but to me it comes down to trying to convey my thought process rather than convince others to conform to my ideals.
+</p>
+<p>
+  Another benefit of blogging is that I can see my evolution of thought. I know that I'm vastly different now than I was just a few years ago but it's hard to track these changes due to our continual conscious perception and our conception of the self. Essays, especially of the form Paul has in mind, seem like a way to break our experience into discrete chunks. It didn't occur to me that essays could have this benefit until I started writing this essay, which seems like good evidence that he's on to something. The purpose of this blog could certainly shift as I write and learn more, but I think this is a good starting point.
+</p>
+{% if g.user %}
+  <a class="action" href="{{ url_for('blog.create') }}">Comment</a>
+{% else %}
+  <a class="nav-link" href="{{ url_for('auth.login') }}">Log in to comment</a>
+  <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
+{% endif %}
+{% for comment in comments %}
+  <div class="comment">
+    <p class="body">
+      {{ comment['body'] }}
+      <div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+    </p>
+    {% if g.user['id'] == comment['author_id'] %}
+        <a class="action" href="{{ url_for('blog.update', id=comment['id']) }}">Edit</a>
+      {% endif %}
+  </div>
+  <hr>
+{% endfor %}
+{% endblock %}

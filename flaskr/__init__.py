@@ -37,13 +37,16 @@ def create_app(test_config=None):
 
   from . import book_scraper
 
-  cache_folder = 'flaskr/.cache_spotify/'
+  def get_cache_folder():
+    if os.getcwd().find('flaskr') == -1:
+      return 'flaskr/.cache_spotify/'
+    return './cache_spotify/'
 
   @app.route('/dashboard', methods=('GET', 'POST'))
   def dashboard():
     # If being redirected from Spotify
     if request.args.get("code"):
-      cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=cache_folder)
+      cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=get_cache_folder)
       auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-top-read',
                                                  cache_handler=cache_handler, 
                                                  show_dialog=True)
@@ -62,6 +65,7 @@ def create_app(test_config=None):
         dtb.execute('INSERT INTO book(title, author, status, url) VALUES(?, ?, ?, ?)', (book['title'], book['author'], book['status'], book['url']))
 
       # Make sure cache exists
+      cache_folder = get_cache_folder()
       if not os.path.exists(cache_folder):
         os.makedirs(cache_folder)
 
@@ -81,21 +85,16 @@ def create_app(test_config=None):
       artist_data = sp.current_user_top_artists(time_range='long_term', limit=20)
       track_data = sp.current_user_top_tracks(time_range='long_term', limit=20)
       
-      # Check if db is empty -> insert if empty, update otherwise
-      isempty = dtb.execute('SELECT count(*) FROM (SELECT 0 FROM artist LIMIT 1)').fetchone()[0] == 0
+      # Clear artists and tracks tables
+      dtb.execute('DELETE FROM artist')
+      dtb.execute('DELETE FROM track')
       
-      # Insert into db if empty, otherwise update
+      # Insert new artists and tracks
       for i, item in enumerate(artist_data['items']):
-        if isempty:
-          dtb.execute('INSERT INTO artist(name, image_url, spotify_url, rank) VALUES(?, ?, ?, ?)', (item['name'], item['images'][0]['url'], item['external_urls']['spotify'], i))
-        else:
-          dtb.execute('UPDATE artist SET name = :name, image_url = :image_url, spotify_url = :spotify_url WHERE rank = :rank', {'name': item['name'], 'image_url': item['images'][0]['url'], 'spotify_url': item['external_urls']['spotify'], 'rank': i})
+        dtb.execute('INSERT INTO artist(name, image_url, spotify_url, rank) VALUES(?, ?, ?, ?)', (item['name'], item['images'][0]['url'], item['external_urls']['spotify'], i))
       for i, item in enumerate(track_data['items']):
-        if isempty:
-          dtb.execute('INSERT INTO track(name, artist, spotify_url, rank) VALUES(?, ?, ?, ?)', (item['name'], item['artists'][0]['name'], item['external_urls']['spotify'], i))
-        else:
-          dtb.execute('UPDATE track SET name = :name, artist = :artist, spotify_url = :spotify_url WHERE rank = :rank', {'name': item['name'], 'artist': item['artists'][0]['name'], 'spotify_url': item['external_urls']['spotify'], 'rank': i})
-
+        dtb.execute('INSERT INTO track(name, artist, spotify_url, rank) VALUES(?, ?, ?, ?)', (item['name'], item['artists'][0]['name'], item['external_urls']['spotify'], i))
+        
     artists = dtb.execute('SELECT * FROM artist ORDER BY rank').fetchall()
     tracks = dtb.execute('SELECT * FROM track ORDER BY rank').fetchall()
     books = dtb.execute('SELECT * FROM book').fetchall()
