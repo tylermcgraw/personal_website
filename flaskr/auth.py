@@ -6,8 +6,8 @@ from flaskr.db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-@bp.route('/register', methods=('GET', 'POST'))
-def register():
+@bp.route('/register/<string:post>', methods=('GET', 'POST'))
+def register(post):
   if request.method == 'POST':
     username = request.form['username']
     password = request.form['password']
@@ -22,14 +22,18 @@ def register():
     if error is None:
       try:
         db.execute(
-          "INSERT INTO user (username, password) VALUES (?, ?)",
-          (username, generate_password_hash(password)),
+          "INSERT INTO user (username, password) VALUES (?, ?)", (username, generate_password_hash(password)),
         )
         db.commit()
       except db.IntegrityError:
         error = f"User {username} is already registered."
       else:
-        return redirect(url_for("auth.login"))
+        session.clear()
+        user = db.execute('SELECT * FROM user WHERE username = ?', (username,)).fetchone()
+        session['user_id'] = user['id']
+        if post == 'home':
+          return redirect(url_for('blog.home'))
+        return redirect(url_for('blog.post', post=post))
 
     flash(error)
 
@@ -37,16 +41,14 @@ def register():
   return render_template('auth/register.html')
 
 
-@bp.route('/login', methods=('GET', 'POST'))
-def login():
+@bp.route('/login/<string:post>', methods=('GET', 'POST'))
+def login(post):
   if request.method == 'POST':
     username = request.form['username']
     password = request.form['password']
     db = get_db()
     error = None
-    user = db.execute(
-      'SELECT * FROM user WHERE username = ?', (username,)
-    ).fetchone()
+    user = db.execute('SELECT * FROM user WHERE username = ?', (username,)).fetchone()
 
     if user is None:
       error = 'Incorrect username.'
@@ -56,7 +58,9 @@ def login():
     if error is None:
       session.clear()
       session['user_id'] = user['id']
-      return redirect(url_for('blog.home'))
+      if post == 'home':
+        return redirect(url_for('blog.home'))
+      return redirect(url_for('blog.post', post=post))
 
     flash(error)
 
@@ -64,10 +68,12 @@ def login():
   return render_template('auth/login.html')
 
 
-@bp.route('/logout')
-def logout():
-    session.clear()
+@bp.route('/logout/<string:post>')
+def logout(post):
+  session.clear()
+  if post == 'home':
     return redirect(url_for('blog.home'))
+  return redirect(url_for('blog.post', post=post))
 
 
 # Register function that loads user before view function
@@ -78,9 +84,7 @@ def load_logged_in_user():
   if user_id is None:
     g.user = None
   else:
-    g.user = get_db().execute(
-      'SELECT * FROM user WHERE id = ?', (user_id,)
-    ).fetchone()
+    g.user = get_db().execute('SELECT * FROM user WHERE id = ?', (user_id,)).fetchone()
 
 
 # Decorator to be used in views that require login

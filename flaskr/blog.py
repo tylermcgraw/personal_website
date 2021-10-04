@@ -5,27 +5,18 @@ from flaskr.db import get_db
 
 bp = Blueprint('blog', __name__, url_prefix='/blog')
 
+# Render blog homepage
 @bp.route('/home')
 def home():
-  db = get_db()
-  comments = db.execute(
-    'SELECT p.id, post, body, created, author_id, username'
-    ' FROM comment p JOIN user u ON p.author_id = u.id'
-    ' ORDER BY created DESC'
-  ).fetchall()
-  return render_template('blog/home.html', comments=comments)
+  return render_template('blog/home.html')
 
 
-@bp.route('/post/<string:post>')
+# Render post and comments, add comment if POST request
+@bp.route('/post/<string:post>', methods=('GET', 'POST'))
 def post(post):
-  return render_template(f'blog/posts/{post}.html')
-
-
-@bp.route('/create', methods=('GET', 'POST'))
-@login_required
-def create():
+  db = get_db()
   if request.method == 'POST':
-    post = 'genesis' #todo
+    # New comment
     body = request.form['body']
     error = None
 
@@ -35,19 +26,16 @@ def create():
     if error is not None:
       flash(error)
     else:
-      db = get_db()
-      db.execute(
-        'INSERT INTO comment (post, body, author_id)'
-        ' VALUES (?, ?, ?)',
-        (post, body, g.user['id'])
-      )
+      db.execute('INSERT INTO comment (post, body, author_id) VALUES (?, ?, ?)', (post, body, g.user['id']))
       db.commit()
-      return redirect(url_for('blog.home'))
+  # Select comment body, id, author_id, and created date; user username
+  comments = db.execute('SELECT body, comment.id, author_id, username, created '
+                        'FROM comment INNER JOIN user ON comment.author_id = user.id '
+                        'WHERE post = :post ORDER BY created ASC', {'post': post}).fetchall()
+  return render_template(f'blog/posts/{post}.html', comments=comments, post=post)
 
-  return render_template('blog/create.html')
 
-
-# Fetch comment to be updated or deleted
+# Fetch comment to be deleted
 def get_comment(id, check_author=True):
   comment = get_db().execute(
     'SELECT p.id, post, body, created, author_id, username'
@@ -65,39 +53,12 @@ def get_comment(id, check_author=True):
   return comment
 
 
-@bp.route('/<int:id>/update', methods=('GET', 'POST'))
+# Delete comment
+@bp.route('/<int:id>/<string:post>/delete', methods=('POST',))
 @login_required
-def update(id):
-  comment = get_comment(id)
-
-  if request.method == 'POST':
-    post = 'genesis' #todo
-    body = request.form['body']
-    error = None
-
-    if not body:
-      error = 'Text is required.'
-
-    if error is not None:
-      flash(error)
-    else:
-      db = get_db()
-      db.execute(
-        'UPDATE comment SET post = ?, body = ?'
-        ' WHERE id = ?',
-        (post, body, id)
-      )
-      db.commit()
-      return redirect(url_for('blog.home'))
-
-  return render_template('blog/update.html', comment=comment)
-
-
-@bp.route('/<int:id>/delete', methods=('POST',))
-@login_required
-def delete(id):
+def delete(id, post):
   get_comment(id)
   db = get_db()
   db.execute('DELETE FROM comment WHERE id = ?', (id,))
   db.commit()
-  return redirect(url_for('blog.home'))
+  return redirect(url_for('blog.post', post=post))

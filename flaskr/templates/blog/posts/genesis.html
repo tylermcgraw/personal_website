@@ -11,14 +11,14 @@
         <span class="nav-link active">{{ g.user['username'] }}</span>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a>
+        <a class="nav-link" href="{{ url_for('auth.logout', post=post) }}">Log Out</a>
       </li>
     {% else %}
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
+        <a class="nav-link" href="{{ url_for('auth.register', post=post) }}">Register</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
+        <a class="nav-link" href="{{ url_for('auth.login', post=post) }}">Log In</a>
       </li>
     {% endif %}
     </ul>
@@ -41,22 +41,28 @@
 <p>
   Another benefit of blogging is that I can see my evolution of thought. I know that I'm vastly different now than I was just a few years ago but it's hard to track these changes due to our continual conscious perception and our conception of the self. Essays, especially of the form Paul has in mind, seem like a way to break our experience into discrete chunks. It didn't occur to me that essays could have this benefit until I started writing this essay, which seems like good evidence that he's on to something. The purpose of this blog could certainly shift as I write and learn more, but I think this is a good starting point.
 </p>
-{% if g.user %}
-  <a class="action" href="{{ url_for('blog.create') }}">Comment</a>
-{% else %}
-  <a class="nav-link" href="{{ url_for('auth.login') }}">Log in to comment</a>
-  <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
-{% endif %}
+<h4 class="mt-4">Comments</h4>
 {% for comment in comments %}
   <div class="comment">
     <p class="body">
       {{ comment['body'] }}
-      <div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+      <div class="about">by {{ comment['username'] }} on {{ comment['created'].strftime('%Y-%m-%d') }}</div>
     </p>
     {% if g.user['id'] == comment['author_id'] %}
-        <a class="action" href="{{ url_for('blog.update', id=comment['id']) }}">Edit</a>
-      {% endif %}
+      <form action="{{ url_for('blog.delete', id=comment['id'], post=post) }}" method="post">
+        <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+      </form>
+    {% endif %}
   </div>
   <hr>
 {% endfor %}
+{% if g.user %}
+  <form method="post">
+    <textarea autocomplete="off" name="body" id="body"></textarea>
+    <input type="submit" value="Save">
+  </form>
+{% else %}
+  <a href="{{ url_for('auth.login', post=post) }}">Log in to comment</a><br>
+  <a href="{{ url_for('auth.register', post=post) }}">Register</a>
+{% endif %}
 {% endblock %}
