@@ -37,21 +37,27 @@ def create_app(test_config=None):
 
   from . import book_scraper
 
-  def get_cache_folder():
-    if os.getcwd().find('flaskr') == -1:
-      return 'flaskr/.cache_spotify/'
-    return './cache_spotify/'
+  # Make sure cache exists
+  cache_folder = './.cache_spotify/'
+  if not os.path.exists(cache_folder):
+    os.makedirs(cache_folder)
+
+  def get_cache_path():
+    return cache_folder + 'tmcgraw'
+  
 
   @app.route('/dashboard', methods=('GET', 'POST'))
   def dashboard():
+    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=get_cache_path())
+    auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-top-read',
+                                                cache_handler=cache_handler, 
+                                                open_browser=False, 
+                                                show_dialog=True)
+
     # If being redirected from Spotify
     if request.args.get("code"):
-      cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=get_cache_folder)
-      auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-top-read',
-                                                 cache_handler=cache_handler, 
-                                                 show_dialog=True)
       auth_manager.get_access_token(request.args.get("code"))
-      # code 307 is a POST request, so tmcgraw doesn't have to click refresh again
+      # code 307 is a POST request, so user tmcgraw doesn't have to click refresh again
       return redirect('/dashboard', code=307)
 
     dtb = db.get_db()
@@ -63,20 +69,13 @@ def create_app(test_config=None):
       # Populate books table
       for book in books:
         dtb.execute('INSERT INTO book(title, author, status, url) VALUES(?, ?, ?, ?)', (book['title'], book['author'], book['status'], book['url']))
-
-      # Make sure cache exists
-      cache_folder = get_cache_folder()
-      if not os.path.exists(cache_folder):
-        os.makedirs(cache_folder)
-
-      cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=cache_folder)
-      auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-top-read',
-                                                 cache_handler=cache_handler, 
-                                                 show_dialog=True)
       
       # Redirect to Spotify sign in if no token
       if not auth_manager.validate_token(cache_handler.get_cached_token()):
         return redirect(auth_manager.get_authorize_url())
+
+      cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=get_cache_path())
+      auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
         
       # Signed in, get data
       sp = spotipy.Spotify(auth_manager=auth_manager)
