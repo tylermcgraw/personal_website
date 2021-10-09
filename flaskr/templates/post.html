@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Blog
+{% endblock %}
+
+{% block header %}
+  <ul class="navbar-nav">
+    {% if g.user %}
+      <li class="nav-item">
+        <span class="nav-link active">{{ g.user['username'] }}</span>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('auth.logout', post=post) }}">Log Out</a>
+      </li>
+    {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('auth.register', post=post) }}">Register</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('auth.login', post=post) }}">Log In</a>
+      </li>
+    {% endif %}
+    </ul>
+{% endblock %}
+
+{% block main %}
+{% block post %}{% endblock %}
+<h4 class="mt-4">Comments</h4>
+{% for comment in comments %}
+  <div class="comment">
+    <p class="body">
+      {{ comment['body'] }}
+      <div class="about">by {{ comment['username'] }} on {{ comment['created'].strftime('%Y-%m-%d') }}</div>
+    </p>
+    {% if g.user['id'] == comment['author_id'] %}
+      <form action="{{ url_for('blog.delete', id=comment['id'], post=post) }}" method="post">
+        <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+      </form>
+    {% endif %}
+  </div>
+  <hr>
+{% endfor %}
+{% if g.user %}
+  <form method="post">
+    <textarea autocomplete="off" name="body" id="body"></textarea>
+    <input type="submit" value="Save">
+  </form>
+{% else %}
+  <a href="{{ url_for('auth.login', post=post) }}">Log in to comment</a><br>
+  <a href="{{ url_for('auth.register', post=post) }}">Register</a>
+{% endif %}
+{% endblock %}

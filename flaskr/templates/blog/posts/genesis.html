@@ -1,30 +1,6 @@
-{% extends "layout.html" %}
+{% extends "post.html" %}
 
-{% block title %}
-  Blog
-{% endblock %}
-
-{% block header %}
-  <ul class="navbar-nav">
-    {% if g.user %}
-      <li class="nav-item">
-        <span class="nav-link active">{{ g.user['username'] }}</span>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('auth.logout', post=post) }}">Log Out</a>
-      </li>
-    {% else %}
-      <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('auth.register', post=post) }}">Register</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('auth.login', post=post) }}">Log In</a>
-      </li>
-    {% endif %}
-    </ul>
-{% endblock %}
-
-{% block main %}
+{% block post %}
 <h1>Genesis</h1>
 <p>
   I've never liked writing. However, when I try to think of the reason for why that is, I think it mainly comes down to my not having a natural proclivity for it. I was good at most of the things I did when I was a kid, and I enjoyed being good at things. This was probably partly for competitive reasons, but I also enjoyed the praise I got for being a good student or basketball player. Writing was not among the things that I was good enough at to elicit praise, and so I avoided it as much as possible. My memory could be failing me, but I can't recall a single time in my life where I sat down and wrote something that wasn't for an assignment or application.
@@ -41,28 +17,4 @@
 <p>
   Another benefit of blogging is that I can see my evolution of thought. I know that I'm vastly different now than I was just a few years ago but it's hard to track these changes due to our continual conscious perception and our conception of the self. Essays, especially of the form Paul has in mind, seem like a way to break our experience into discrete chunks. It didn't occur to me that essays could have this benefit until I started writing this essay, which seems like good evidence that he's on to something. The purpose of this blog could certainly shift as I write and learn more, but I think this is a good starting point.
 </p>
-<h4 class="mt-4">Comments</h4>
-{% for comment in comments %}
-  <div class="comment">
-    <p class="body">
-      {{ comment['body'] }}
-      <div class="about">by {{ comment['username'] }} on {{ comment['created'].strftime('%Y-%m-%d') }}</div>
-    </p>
-    {% if g.user['id'] == comment['author_id'] %}
-      <form action="{{ url_for('blog.delete', id=comment['id'], post=post) }}" method="post">
-        <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
-      </form>
-    {% endif %}
-  </div>
-  <hr>
-{% endfor %}
-{% if g.user %}
-  <form method="post">
-    <textarea autocomplete="off" name="body" id="body"></textarea>
-    <input type="submit" value="Save">
-  </form>
-{% else %}
-  <a href="{{ url_for('auth.login', post=post) }}">Log in to comment</a><br>
-  <a href="{{ url_for('auth.register', post=post) }}">Register</a>
-{% endif %}
 {% endblock %}
