@@ -29,14 +29,10 @@ def get_books():
           start = index + html[index:].find('>') + 1
           end = index + html[index + 16:].find('<') + 16
           author = html[start:end]
-          author = author[author.find(",") + 2:] + ' ' + author[:author.find(",")]
+          if author.find(',') != -1:
+            author = author[author.find(",") + 2:] + ' ' + author[:author.find(",")]
           html = html[end:]
-          #if shelf == 'read':
-          #  status = 'Read'
-          #elif shelf == 'to-read':
-          #  status = 'Want to Read'
-          #else:
-          #  status = "Currently Reading"
+          # Set status to current shelf
           status = shelf
           books.append({
             'title': title,
