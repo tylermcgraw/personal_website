@@ -93,11 +93,11 @@ def create_app(test_config=None):
         dtb.execute('INSERT INTO artist(name, image_url, spotify_url, rank) VALUES(?, ?, ?, ?)', (item['name'], item['images'][0]['url'], item['external_urls']['spotify'], i))
       for i, item in enumerate(track_data['items']):
         dtb.execute('INSERT INTO track(name, artist, spotify_url, rank) VALUES(?, ?, ?, ?)', (item['name'], item['artists'][0]['name'], item['external_urls']['spotify'], i))
+      dtb.commit()
         
     artists = dtb.execute('SELECT * FROM artist ORDER BY rank').fetchall()
     tracks = dtb.execute('SELECT * FROM track ORDER BY rank').fetchall()
     books = dtb.execute('SELECT * FROM book').fetchall()
-    dtb.commit()
     return render_template('dashboard.html', artists=artists, tracks=tracks, books=books)
 
 
