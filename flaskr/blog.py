@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for
 from werkzeug.exceptions import abort
-from flaskr.auth import login_required
+#from flaskr.auth import login_required
 from flaskr.db import get_db
 
 bp = Blueprint('blog', __name__, url_prefix='/blog')
@@ -11,6 +11,11 @@ def home():
   return render_template('blog/home.html')
 
 
+@bp.route('/post/<string:post>', methods=('GET', 'POST'))
+def post(post):
+  return render_template(f'blog/posts/{post}.html', post=post)
+
+'''
 # Render post and comments, add comment if POST request
 @bp.route('/post/<string:post>', methods=('GET', 'POST'))
 def post(post):
@@ -62,3 +67,4 @@ def delete(id, post):
   db.execute('DELETE FROM comment WHERE id = ?', (id,))
   db.commit()
   return redirect(url_for('blog.post', post=post))
+'''
