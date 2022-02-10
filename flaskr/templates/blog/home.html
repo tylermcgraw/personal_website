@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+  <a class="nav-link" href="{{ url_for('blog.post', post='top_albums') }}">Top 10 Albums of All Time</a>
   <a class="nav-link" href="{{ url_for('blog.post', post='machine_stops') }}"><em>The Machine Stops</em>, by E.M. Forster</a>
   <a class="nav-link" href="{{ url_for('blog.post', post='stubborn_attachments') }}"><em>Stubborn Attachments</em>, by Tyler Cowen</a>
   <a class="nav-link" href="{{ url_for('blog.post', post='evolution_beauty') }}"><em>The Evolution of Beauty</em>, by Richard O. Prum</a>
