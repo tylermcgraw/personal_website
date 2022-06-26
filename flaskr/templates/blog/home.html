@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+  <a class="nav-link" href="{{ url_for('blog.post', post='sadly_porn') }}"><em>Sadly, Porn</em>, by Edward Teach</a>
   <a class="nav-link" href="{{ url_for('blog.post', post='mill_autobiography') }}"><em>Autobiography</em>, by John Stuart Mill</a>
   <a class="nav-link" href="{{ url_for('blog.post', post='either_or') }}"><em>Either/Or</em>, by Søren Kierkegaard</a>
   <a class="nav-link" href="{{ url_for('blog.post', post='crimes_punishments') }}"><em>On Crimes and Punishments</em>, by Cesare Beccaria</a>
