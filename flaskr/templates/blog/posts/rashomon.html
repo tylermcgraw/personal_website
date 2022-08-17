@@ -2,14 +2,14 @@
 {% block post %}
 <h1><em>Rashomon</em> by Akira Kurosawa</h1>
 <p>8/17/22</p>
-<img src="/flaskr/templates/blog/images/rashomon has such a hateful thing.webp" alt="Rashomon: Has such a hateful thing ever been uttered by a human before?">
+<img src="{{ url_for('static', filename='rashomon has such a hateful thing.webp') }}" alt="Rashomon: Has such a hateful thing ever been uttered by a human before?">
 <p>
     I’ve only rated 21 films since starting to use IMDb’s watchlist and rating system, and Rashomon is the first one I’ve given a 10. Akira Kurosawa’s reputation precedes him so I knew it would be a beautiful masterpiece going in, but what pushed this film to the next level for me was the striking moral message it delivered.
 </p>
 <p>
     Rashomon tells the story of a horrific crime from 4 different individuals. The perspectives are shared in a linear fashion, so it was not until the second individual’s recounting that I realized that they are unreliable narrators. My instinct was to try to reconcile the two tellings – given the facts, the differences in their stories, and their motivations, perhaps it would be possible to reconstruct what really happened. I thought I had made some progress, but then the third account came in and complicated things, and by the fourth I had given up. Perhaps this was one of the intended effects of the film – to frustrate those who would try to construct an objective reality. As the film continued I found myself feeling contempt for each of the tellers. They were all clearly manipulating the crime for their own egoistic benefit, the victims of the crime to an even greater extent than the perpetrator. The linear arrangement of narratives lead me to turn my critique inwards: once you hear 4 stories full of lies and evil you cannot help but think about how you tell the same lies to yourself and others every day.
 </p>
-<img src="/flaskr/templates/blog/images/rashomon if men don't trust.webp" alt="Rashomon: If men don't trust each other, this earth might as well be hell">
+<img src="{{ url_for('static', filename='rashomon if men don't trust.webp') }}" alt="Rashomon: If men don't trust each other, this earth might as well be hell">
 <p>
     We all lie, we all have egoistic drives we prop up; we all sin. Where is our redemption? Kurosawa offers us an answer: in raising the next generation. The world keeps spinning, the cycle of life and death continues; all we can do, and all we must do, is try to make things better for our descendants. Other analyses I have read either disregard the moral element entirely or interpret it more generally than I. They say the answer is that just as we all lie, we all have the capacity for good. The ending is just a particular instance of this. I don’t think it really matters what Kurosawa intended or even what the specific answer is. But what is non-negotiable in my view is the fact that Rashomon identifies a flaw in humans and offers us a way out – it is deeply moral.
 </p>
@@ -22,5 +22,5 @@
 <p>
     Again, I am no insider in the art or film worlds, but it seems that the critic’s answer is yes. Films are not supposed to have moral messages; art should be pure, untouched by such terrestrial concerns. In a postmodern setting where not only truth but morality is subjective, it is gauche to speak in moral absolutes. Questions of how one ought to live belong to religion, to government – to the man. Art belongs to counterculture. Thus speaks the modern art world.
 </p>
-<img src="/flaskr/templates/blog/images/rashomon ending baby.png" alt="Rashomon ending: man holding a baby">
+<img src="{{ url_for('static', filename='rashomon ending baby.png') }}" alt="Rashomon ending: man holding a baby">
 {% endblock %}
